@@ -1,5 +1,6 @@
 package com.geekend.core.game;
 
+import com.geekend.core.game.input.InputOracle;
 
 /**
  * A module represents a screen / level.
@@ -9,8 +10,10 @@ public interface GameModule {
 	/**
 	 * Initializes this module. Here is where listeners should be wired up and
 	 * resources loaded.
+	 * 
+	 * @param inputOracle
 	 */
-	public abstract void init();
+	public abstract void init(InputOracle inputOracle);
 
 	/**
 	 * Shuts down this module. Listeners should be cleared and resources

@@ -5,15 +5,19 @@ import playn.core.PlayN;
 import playn.core.Touch;
 
 import com.geekend.core.game.GameModule;
+import com.geekend.core.game.input.InputOracle;
 import com.geekend.core.game.module.Multiplayer;
 
 public class Geekend implements Game {
 
 	private GameModule currentModule = null;
 	private final GameModule multiplayer = new Multiplayer();
+	private InputOracle inputOracle;
 
 	@Override
 	public void init() {
+		inputOracle = new InputOracle();
+
 		try {
 			PlayN.touch().setListener(new Touch.Adapter() {
 				@Override
@@ -50,7 +54,7 @@ public class Geekend implements Game {
 			currentModule.shutdown();
 		}
 		currentModule = module;
-		currentModule.init();
+		currentModule.init(inputOracle);
 	}
 
 }
