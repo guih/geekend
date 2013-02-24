@@ -15,7 +15,7 @@ public class WebSocketRemoteConnection implements RemoteConnection {
 
 	private final int port = 8080;
 
-	private final String address = "0.0.0.0";
+	private final String address = "192.168.1.108";
 
 	private final Set<RemoteMessageListener> listeners = new HashSet<RemoteMessageListener>();
 
