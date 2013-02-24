@@ -1,0 +1,6 @@
+#surefire
+#Sun Feb 24 05:05:50 BRT 2013
+user.dir=C\:\\Users\\Guih-OnCast\\Documents\\GitHub\\geekend\\geekend-server
+exec.mainClass=com.geekend.server.JettyBootstrap
+localRepository=C\:\\Users\\Guih-OnCast\\.m2\\repository
+basedir=C\:\\Users\\Guih-OnCast\\Documents\\GitHub\\geekend\\geekend-server
