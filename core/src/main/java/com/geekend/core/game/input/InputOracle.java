@@ -9,11 +9,11 @@ import playn.core.Keyboard.Listener;
 import playn.core.Keyboard.TypedEvent;
 import playn.core.PlayN;
 
-public class InputOracle {
+public final class InputOracle {
 
-	private final Set<Key> pressedKeys;
+	private static final Set<Key> pressedKeys;
 
-	public InputOracle() {
+	static {
 		pressedKeys = new HashSet<Key>();
 
 		PlayN.keyboard().setListener(new Listener() {
@@ -33,7 +33,10 @@ public class InputOracle {
 		});
 	}
 
-	public boolean isKeyPressed(final Key key) {
+	private InputOracle() {
+	}
+
+	public static boolean isKeyPressed(final Key key) {
 		return pressedKeys.contains(key);
 	}
 }

@@ -2,47 +2,53 @@ package com.geekend.core.game.module;
 
 import static playn.core.PlayN.assets;
 import static playn.core.PlayN.graphics;
+import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.ImageLayer;
 import playn.core.Key;
 
 import com.geekend.core.game.GameModule;
+import com.geekend.core.game.component.Console;
+import com.geekend.core.game.component.Player;
 import com.geekend.core.game.input.InputOracle;
-import com.geekend.core.game.model.Player;
 
 public class Multiplayer implements GameModule {
 
-	private InputOracle inputOracle;
+	private GroupLayer layer;
 	private final Player mainPlayer = new Player();
-	private ImageLayer peaLayer;
+	private Console console;
 
 	@Override
-	public void init(final InputOracle inputOracle) {
-		this.inputOracle = inputOracle;
-		final Image pea = assets().getImage("images/player.gif");
-		peaLayer = graphics().createImageLayer(pea);
-		graphics().rootLayer().add(peaLayer);
+	public void init() {
+		layer = graphics().createGroupLayer();
+		graphics().rootLayer().add(layer);
+
+		final Image bgImage = assets().getImage("images/bg.jpg");
+		final ImageLayer bgLayer = graphics().createImageLayer(bgImage);
+		layer.add(bgLayer);
+		bgLayer.setTranslation(-200, bgImage.height() / 2);
+
+		mainPlayer.init(layer, 0, 0);
+		console = new Console();
+		console.init(graphics().rootLayer());
 	}
 
 	@Override
-	public void shutdown() {
+	public void destroy() {
 	}
 
 	@Override
 	public void update(final float delta) {
-		final float distance = mainPlayer.getSpeed() * delta;
-		if (inputOracle.isKeyPressed(Key.UP))
-			mainPlayer.updateY(-1 * distance);
-		if (inputOracle.isKeyPressed(Key.DOWN))
-			mainPlayer.updateY(distance);
-		if (inputOracle.isKeyPressed(Key.LEFT))
-			mainPlayer.updateX(-1 * distance);
-		if (inputOracle.isKeyPressed(Key.RIGHT))
-			mainPlayer.updateX(distance);
+		mainPlayer.update(delta);
+
+		if (InputOracle.isKeyPressed(Key.SPACE))
+			console.log("Coordenada: " + mainPlayer.getX() + " - " + mainPlayer.getY());
 	}
 
 	@Override
 	public void paint(final float alpha) {
-		peaLayer.setTranslation(mainPlayer.getX(), mainPlayer.getY());
+		layer.setTranslation(graphics().width() / 2, graphics().height() / 2);
+		layer.setOrigin(mainPlayer.getX(), mainPlayer.getY());
+		mainPlayer.paint(alpha);
 	}
 }
