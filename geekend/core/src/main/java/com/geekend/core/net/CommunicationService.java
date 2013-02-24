@@ -96,7 +96,6 @@ public class CommunicationService implements RemoteMessageListener {
 				String name = f.getName();
 				Class<?> fieldType = f.getType();
 
-				System.out.println(fieldType);
 				if (f.get(event) == null)
 					writer.nul(name);
 				else if (String.class.isAssignableFrom(fieldType))

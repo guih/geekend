@@ -15,13 +15,15 @@ public class WebSocketRemoteConnection implements RemoteConnection {
 
 	private final int port = 8080;
 
+	private final String address = "0.0.0.0";
+
 	private final Set<RemoteMessageListener> listeners = new HashSet<RemoteMessageListener>();
 
 	@Override
 	public void connect() {
 		if (webSocket != null) return;
 
-		webSocket = PlayN.net().createWebSocket("ws://localhost:" + port, new Listener() {
+		webSocket = PlayN.net().createWebSocket("ws://" + address + ":" + port, new Listener() {
 
 			@Override
 			public void onTextMessage(String msg) {
@@ -79,8 +81,7 @@ public class WebSocketRemoteConnection implements RemoteConnection {
 	}
 
 	private void log(String msg) {
-		// FIXME implement logging
-		// console.log(msg);
+		PlayN.log().debug(msg);
 	}
 
 }
