@@ -1,6 +1,8 @@
 package com.geekend.core;
 
+import static playn.core.PlayN.graphics;
 import playn.core.Game;
+import playn.core.GroupLayer;
 import playn.core.PlayN;
 import playn.core.Touch;
 
@@ -11,6 +13,7 @@ public class Geekend implements Game {
 
 	private GameModule currentModule = null;
 	private final GameModule multiplayer = new Multiplayer();
+	private final GroupLayer rootLayer = graphics().rootLayer();
 
 	@Override
 	public void init() {
@@ -47,8 +50,9 @@ public class Geekend implements Game {
 	public void switchModule(final GameModule module) {
 		if (currentModule != null)
 			currentModule.destroy();
+		rootLayer.clear();
 		currentModule = module;
-		currentModule.init();
+		currentModule.init(rootLayer);
 	}
 
 }

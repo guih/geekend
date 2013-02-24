@@ -15,35 +15,48 @@ import com.geekend.core.net.CommunicationService;
 
 public class Multiplayer implements GameModule {
 
-	private GroupLayer layer;
+	private GroupLayer gameLayer;
+
+	private GroupLayer playerLayer;
+
 	private final Player mainPlayer = new Player();
+
 	private Console console;
+
 	private CommunicationService communication;
 
 	@Override
-	public void init() {
-		layer = graphics().createGroupLayer();
-		graphics().rootLayer().add(layer);
+	public void init(final GroupLayer rootLayer) {
+		gameLayer = graphics().createGroupLayer();
+		rootLayer.add(gameLayer);
 
 		final Image bgImage = assets().getImage("images/bg.jpg");
 		final ImageLayer bgLayer = graphics().createImageLayer(bgImage);
-		layer.add(bgLayer);
+		gameLayer.add(bgLayer);
 		bgLayer.setTranslation(-200, bgImage.height() / 2);
 
-		mainPlayer.init(layer, 0, 0);
+		playerLayer = graphics().createGroupLayer();
+		gameLayer.add(playerLayer);
+
+		mainPlayer.init(playerLayer, 0, 0);
+
 		console = new Console();
-		console.init(graphics().rootLayer());
+		console.init(rootLayer);
 		communication = new CommunicationService(console, 8080);
 	}
 
 	@Override
-	public void destroy() {}
+	public void destroy() {
+		playerLayer.destroy();
+		gameLayer.destroy();
+	}
 
 	@Override
 	public void update(final float delta) {
 		mainPlayer.update(delta);
 
-		if (InputOracle.isKeyPressed(Key.M)) communication.send("Ahoy");
+		if (InputOracle.isKeyPressed(Key.M))
+			communication.send("Ahoy");
 
 		if (InputOracle.isKeyPressed(Key.SPACE))
 			console.log("Coordenada: " + mainPlayer.getX() + " - " + mainPlayer.getY());
@@ -51,8 +64,8 @@ public class Multiplayer implements GameModule {
 
 	@Override
 	public void paint(final float alpha) {
-		layer.setTranslation(graphics().width() / 2, graphics().height() / 2);
-		layer.setOrigin(mainPlayer.getX(), mainPlayer.getY());
+		gameLayer.setTranslation(graphics().width() / 2, graphics().height() / 2);
+		gameLayer.setOrigin(mainPlayer.getX(), mainPlayer.getY());
 		mainPlayer.paint(alpha);
 	}
 }
