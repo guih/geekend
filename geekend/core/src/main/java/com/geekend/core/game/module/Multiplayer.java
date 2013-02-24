@@ -2,21 +2,25 @@ package com.geekend.core.game.module;
 
 import static playn.core.PlayN.assets;
 import static playn.core.PlayN.graphics;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.ImageLayer;
-import playn.core.PlayN;
 
 import com.geekend.core.game.GameModule;
 import com.geekend.core.game.component.MainPlayer;
-import com.geekend.core.net.CommunicationService;
-import com.geekend.core.net.event.PlayerUpdatePositionEvent;
-import com.geekend.core.net.event.PlayerUpdatePositionHandler;
-import com.geekend.core.net.remote.WebSocketRemoteConnection;
+import com.geekend.core.game.component.OpponentPlayer;
+import com.geekend.core.game.data.PlayerData;
+import com.geekend.core.game.data.PlayerDataProvider;
 
 public class Multiplayer implements GameModule {
 
-	private final MainPlayer mainPlayer = new MainPlayer();
+	private final MainPlayer mainPlayer;
+	
+	private final Map<PlayerData, OpponentPlayer> otherPlayers = new HashMap<PlayerData, OpponentPlayer>();
 
 	private GroupLayer gameLayer;
 
@@ -24,8 +28,13 @@ public class Multiplayer implements GameModule {
 
 	private Image bgImage;
 
-	private CommunicationService service;
+	private PlayerDataProvider dataProvider;
 
+	public Multiplayer(PlayerDataProvider dataProvider) {
+		this.dataProvider = dataProvider;
+		mainPlayer = new MainPlayer(dataProvider.getMainPlayerData());
+	}
+	
 	@Override
 	public void init(final GroupLayer rootLayer) {
 		gameLayer = graphics().createGroupLayer();
@@ -38,17 +47,7 @@ public class Multiplayer implements GameModule {
 		playerLayer = graphics().createGroupLayer();
 		gameLayer.add(playerLayer);
 
-		mainPlayer.init(playerLayer, 310f, 357f);
-
-		WebSocketRemoteConnection connection = new WebSocketRemoteConnection();
-		connection.connect();
-		service = new CommunicationService(connection);
-		service.register(PlayerUpdatePositionEvent.getType(), new PlayerUpdatePositionHandler() {
-			@Override
-			public void onEvent(PlayerUpdatePositionEvent event) {
-				PlayN.log().info("received + " + event.getPlayerX() + " : " + event.getPlayerY());
-			}
-		});
+		mainPlayer.init(playerLayer);
 	}
 
 	@Override
@@ -60,13 +59,20 @@ public class Multiplayer implements GameModule {
 	@Override
 	public void update(final float delta) {
 		mainPlayer.update(delta);
-		service.send(new PlayerUpdatePositionEvent("", mainPlayer.getX(), mainPlayer.getY(), mainPlayer.getSpeed()));
+		for (PlayerData playerData : dataProvider.getOtherPlayers()) {
+			if (otherPlayers.containsKey(playerData)) continue;
+			otherPlayers.put(playerData, new OpponentPlayer(playerData));
+		}
+		dataProvider.multicastPlayerData();
 	}
 
 	@Override
 	public void paint(final float alpha) {
+		final PlayerData mainPlayerData = dataProvider.getMainPlayerData();
+		gameLayer.setOrigin(mainPlayerData.x, mainPlayerData.y);
 		gameLayer.setTranslation(graphics().width() / 2, graphics().height() / 2);
-		gameLayer.setOrigin(mainPlayer.getX(), mainPlayer.getY());
 		mainPlayer.paint(alpha);
+		for (OpponentPlayer player : otherPlayers.values())
+			player.paint(alpha);
 	}
 }

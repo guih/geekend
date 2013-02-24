@@ -1,5 +1,7 @@
 package com.geekend.core.game;
 
+import playn.core.GroupLayer;
+
 
 
 /**
@@ -7,6 +9,12 @@ package com.geekend.core.game;
  */
 public interface GameComponent {
 	
+	/**
+	 * Initializes this module. Here is where listeners should be wired up and
+	 * resources loaded.
+	 */
+	void init(GroupLayer rootLayer);
+
 	/**
 	 * Shuts down this module. Listeners should be cleared and resources
 	 * destroyed.

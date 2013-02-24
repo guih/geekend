@@ -6,12 +6,13 @@ import playn.core.PlayN;
 import playn.core.ResourceCallback;
 
 import com.geekend.core.game.GamePlayer;
+import com.geekend.core.game.data.PlayerData;
 import com.geekend.core.game.input.InputOracle;
 import com.geekend.core.game.sprite.Sprite;
 import com.geekend.core.game.sprite.SpriteLoader;
 
 @SuppressWarnings("deprecation")
-public class MainPlayer implements GamePlayer {
+public final class MainPlayer implements GamePlayer {
 
 	private static final String IMAGE = "sprites/player.png";
 	private static final String JSON = "sprites/player.json";
@@ -21,21 +22,20 @@ public class MainPlayer implements GamePlayer {
 	private static final float SPEED = 0.13f;
 	private static final float TURNING_SPEED = 1f / 200f;
 
-	private float x = 0;
-	private float y = 0;
-	private float angle = 0;
-	private PlayerStates state = PlayerStates.WAITING;
+	private PlayerData data;
 
 	private GroupLayer mainLayer;
 	private Sprite playerSprite;
 	private float spriteCountdown;
 	private int spriteIndex;
 
+	public MainPlayer(PlayerData data) {
+		this.data = data;
+	}
+
 	@Override
-	public void init(final GroupLayer layer, float x, float y) {
+	public void init(final GroupLayer layer) {
 		mainLayer = layer;
-		this.x = x;
-		this.y = y;
 
 		playerSprite = SpriteLoader.getSprite(IMAGE, JSON);
 		playerSprite.addCallback(new ResourceCallback<Sprite>() {
@@ -62,30 +62,22 @@ public class MainPlayer implements GamePlayer {
 	@Override
 	public void destroy() {}
 
-	public float getSpeed() {
+	protected float getSpeed() {
 		return SPEED;
 	}
 
-	private float getTurningSpeed() {
+	protected float getTurningSpeed() {
 		return TURNING_SPEED;
-	}
-
-	public int getX() {
-		return (int) x;
-	}
-
-	public int getY() {
-		return (int) y;
 	}
 
 	@Override
 	public void update(final float delta) {
 		final float distance = InputOracle.isKeyPressed(Key.UP) || InputOracle.isKeyPressed(Key.DOWN) ? getSpeed() * delta : 0;
 		final float direction = InputOracle.isKeyPressed(Key.DOWN) ? -1 : 1;
-		if (InputOracle.isKeyPressed(Key.LEFT)) angle -= delta * getTurningSpeed();
-		if (InputOracle.isKeyPressed(Key.RIGHT)) angle += delta * getTurningSpeed();
-		x += Math.cos(angle) * distance * direction;
-		y += Math.sin(angle) * distance * direction;
+		if (InputOracle.isKeyPressed(Key.LEFT)) data.angle -= delta * getTurningSpeed();
+		if (InputOracle.isKeyPressed(Key.RIGHT)) data.angle += delta * getTurningSpeed();
+		data.x += Math.cos(data.angle) * distance * direction;
+		data.y += Math.sin(data.angle) * distance * direction;
 
 		if (!playerSprite.isReady()) return;
 
@@ -96,25 +88,25 @@ public class MainPlayer implements GamePlayer {
 	}
 
 	private void updatePlayerState() {
-		final PlayerStates current = state;
-		state = PlayerStates.determinePlayerState();
+		final PlayerStates current = data.state;
+		data.state = PlayerStates.determinePlayerState();
 
-		if (state == current) return;
+		if (data.state == current) return;
 
 		spriteIndex = -1;
-		spriteCountdown = state.getCountdownDelay();
+		spriteCountdown = data.state.getCountdownDelay();
 		updateSprite();
 	}
 
 	private void updateSprite() {
-		spriteIndex = (spriteIndex + 1) % state.numSprites();
-		playerSprite.setSprite(state.getSpriteIndex(spriteIndex));
-		spriteCountdown = state.getCountdownDelay();
+		spriteIndex = (spriteIndex + 1) % data.state.numSprites();
+		playerSprite.setSprite(data.state.getSpriteIndex(spriteIndex));
+		spriteCountdown = data.state.getCountdownDelay();
 	}
 
 	@Override
 	public void paint(final float alpha) {
-		playerSprite.layer().setTranslation(x, y);
-		playerSprite.layer().setRotation(angle);
+		playerSprite.layer().setTranslation(data.x, data.y);
+		playerSprite.layer().setRotation(data.angle);
 	}
 }
