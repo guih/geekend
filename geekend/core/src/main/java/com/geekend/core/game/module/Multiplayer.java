@@ -15,7 +15,7 @@ import com.geekend.core.game.component.MainPlayerController;
 import com.geekend.core.game.component.OpponentPlayerController;
 import com.geekend.core.game.component.Player;
 import com.geekend.core.game.data.PlayerData;
-import com.geekend.core.game.data.PlayerDataProvider;
+import com.geekend.core.game.data.DataProvider;
 
 public class Multiplayer implements GameModule {
 
@@ -29,9 +29,9 @@ public class Multiplayer implements GameModule {
 
 	private Image bgImage;
 
-	private final PlayerDataProvider dataProvider;
+	private final DataProvider dataProvider;
 
-	public Multiplayer(final PlayerDataProvider dataProvider) {
+	public Multiplayer(final DataProvider dataProvider) {
 		this.dataProvider = dataProvider;
 		mainPlayer = new Player(new MainPlayerController(), dataProvider.getMainPlayerData());
 	}

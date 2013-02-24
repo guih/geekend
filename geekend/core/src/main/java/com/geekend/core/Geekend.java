@@ -7,7 +7,7 @@ import playn.core.PlayN;
 import playn.core.Touch;
 
 import com.geekend.core.game.GameModule;
-import com.geekend.core.game.data.PlayerDataProvider;
+import com.geekend.core.game.data.DataProvider;
 import com.geekend.core.game.module.Multiplayer;
 
 public class Geekend implements Game {
@@ -17,7 +17,7 @@ public class Geekend implements Game {
 	private final GameModule multiplayer;
 
 	public Geekend() {
-		multiplayer = new Multiplayer(new PlayerDataProvider());
+		multiplayer = new Multiplayer(new DataProvider());
 	}
 	
 	@Override

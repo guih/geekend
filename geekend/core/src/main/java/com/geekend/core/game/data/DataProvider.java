@@ -9,13 +9,13 @@ import com.geekend.core.net.event.PlayerUpdatePositionEvent;
 import com.geekend.core.net.event.PlayerUpdatePositionHandler;
 import com.geekend.core.net.remote.WebSocketRemoteConnection;
 
-public class PlayerDataProvider {
+public class DataProvider {
 
 	private final CommunicationService service;
 	private final Map<String, PlayerData> otherPlayers = new HashMap<String, PlayerData>();
 	private final PlayerData playerData;
 
-	public PlayerDataProvider() {
+	public DataProvider() {
 		playerData = new PlayerData(generateRandomId(), 310f, 357f);
 
 		final WebSocketRemoteConnection connection = new WebSocketRemoteConnection();
