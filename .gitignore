@@ -7,6 +7,7 @@
 .DS_Store
 .project
 .settings/
+target
 android/.classpath
 android/.project
 android/.settings/

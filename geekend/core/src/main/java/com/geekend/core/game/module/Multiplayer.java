@@ -10,27 +10,28 @@ import com.geekend.core.game.GameModule;
 import com.geekend.core.game.component.MainPlayer;
 
 public class Multiplayer implements GameModule {
+	
+	private final MainPlayer mainPlayer = new MainPlayer();
 
 	private GroupLayer gameLayer;
 
 	private GroupLayer playerLayer;
 
-	private final MainPlayer mainPlayer = new MainPlayer();
+	private Image bgImage;
 
 	@Override
 	public void init(final GroupLayer rootLayer) {
 		gameLayer = graphics().createGroupLayer();
 		rootLayer.add(gameLayer);
 
-		final Image bgImage = assets().getImage("images/bg.jpg");
+		bgImage = assets().getImage("images/bg.jpg");
 		final ImageLayer bgLayer = graphics().createImageLayer(bgImage);
 		gameLayer.add(bgLayer);
-		bgLayer.setTranslation(-200, bgImage.height() / 2);
 
 		playerLayer = graphics().createGroupLayer();
 		gameLayer.add(playerLayer);
 
-		mainPlayer.init(playerLayer, 0, 0);
+		mainPlayer.init(playerLayer, 310f, 357f);
 	}
 
 	@Override

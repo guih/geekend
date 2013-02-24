@@ -32,8 +32,11 @@ public class MainPlayer implements GamePlayer {
 	private int spriteIndex;
 
 	@Override
-	public void init(final GroupLayer layer, final int x, final int y) {
+	public void init(final GroupLayer layer, float x, float y) {
 		mainLayer = layer;
+		this.x = x;
+		this.y = y;
+
 		playerSprite = SpriteLoader.getSprite(IMAGE, JSON);
 		playerSprite.addCallback(new ResourceCallback<Sprite>() {
 
@@ -44,6 +47,7 @@ public class MainPlayer implements GamePlayer {
 
 			@Override
 			public void error(final Throwable err) {
+				// TODO Unify error threatment
 				final Console console = new Console();
 				console.init(PlayN.graphics().rootLayer());
 				console.log("erro!!!!!!!!");
@@ -51,6 +55,7 @@ public class MainPlayer implements GamePlayer {
 				console.log(err.toString());
 			}
 		});
+		
 		mainLayer.add(playerSprite.layer());
 	}
 
@@ -76,7 +81,7 @@ public class MainPlayer implements GamePlayer {
 	@Override
 	public void update(final float delta) {
 		final float distance = InputOracle.isKeyPressed(Key.UP) || InputOracle.isKeyPressed(Key.DOWN) ? getSpeed() * delta : 0;
-		final float direction = InputOracle.isKeyPressed(Key.DOWN) ? +1 : 1;
+		final float direction = InputOracle.isKeyPressed(Key.DOWN) ? -1 : 1;
 		if (InputOracle.isKeyPressed(Key.LEFT)) angle -= delta * getTurningSpeed();
 		if (InputOracle.isKeyPressed(Key.RIGHT)) angle += delta * getTurningSpeed();
 		x += Math.cos(angle) * distance * direction;
@@ -88,7 +93,6 @@ public class MainPlayer implements GamePlayer {
 		if (spriteCountdown < 0) updateSprite();
 		else
 			spriteCountdown -= delta;
-
 	}
 
 	private void updatePlayerState() {
@@ -112,9 +116,5 @@ public class MainPlayer implements GamePlayer {
 	public void paint(final float alpha) {
 		playerSprite.layer().setTranslation(x, y);
 		playerSprite.layer().setRotation(angle);
-	}
-
-	public String getName() {
-		return null;
 	}
 }

@@ -1,11 +1,12 @@
 package com.geekend.core.game;
 
 
+
 /**
  * A module represents a screen / level.
  */
 public interface GameComponent {
-
+	
 	/**
 	 * Shuts down this module. Listeners should be cleared and resources
 	 * destroyed.
