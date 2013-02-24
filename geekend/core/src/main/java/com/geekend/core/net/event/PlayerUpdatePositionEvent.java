@@ -3,74 +3,53 @@ package com.geekend.core.net.event;
 import playn.core.Json.Object;
 import playn.core.json.JsonImpl;
 
+import com.geekend.core.game.component.PlayerStates;
+import com.geekend.core.game.data.PlayerData;
 import com.geekend.core.net.remote.RemoteEvent;
 import com.geekend.core.net.remote.RemoteEventFactory;
 import com.geekend.core.net.remote.RemoteEventType;
 
-public class PlayerUpdatePositionEvent implements RemoteEvent {
+public class PlayerUpdatePositionEvent implements RemoteEvent<PlayerData> {
 
 	private static final long serialVersionUID = 1L;
 
 	private static RemoteEventType<PlayerUpdatePositionEvent> TYPE = null;
 
-	private String playerId;
-
-	private float playerX;
-
-	private float playerY;
-
-	private float playerAngle;
+	public String id;
+	public float x;
+	public float y;
+	public float angle;
+	public int state;
 
 	PlayerUpdatePositionEvent() {}
 
-	public PlayerUpdatePositionEvent(String playerId, float playerX, float playerY, float playerAngle) {
-		this.playerId = playerId;
-		this.playerX = playerX;
-		this.playerY = playerY;
-		this.playerAngle = playerAngle;
-	}
-
-	public String getPlayerId() {
-		return playerId;
-	}
-
-	public float getPlayerX() {
-		return playerX;
-	}
-
-	public float getPlayerY() {
-		return playerY;
-	}
-
-	public float getAngle() {
-		return playerAngle;
+	public PlayerUpdatePositionEvent(final PlayerData data) {
+		updateEventFromRealInstance(data);
 	}
 
 	public static RemoteEventType<PlayerUpdatePositionEvent> getType() {
-		return TYPE == null ? TYPE = new RemoteEventType<PlayerUpdatePositionEvent>(
-				new RemoteEventFactory<PlayerUpdatePositionEvent>() {
-					@Override
-					public boolean supports(String className) {
-						return PlayerUpdatePositionEvent.class.getName().equals(className);
-					}
+		return TYPE == null ? TYPE = new RemoteEventType<PlayerUpdatePositionEvent>(new RemoteEventFactory<PlayerUpdatePositionEvent>() {
+			@Override
+			public boolean supports(final String className) {
+				return PlayerUpdatePositionEvent.class.getName().equals(className);
+			}
 
-					@Override
-					public PlayerUpdatePositionEvent fromJson(Object object) {
-						PlayerUpdatePositionEvent event = new PlayerUpdatePositionEvent();
-						event.playerId = object.getString("playerId", "");
-						event.playerAngle = object.getNumber("playerAngle", 0);
-						event.playerX = object.getNumber("playerX", 0);
-						event.playerY = object.getNumber("playerY", 0);
-						return event;
-					}
+			@Override
+			public PlayerUpdatePositionEvent fromJson(final Object object) {
+				final PlayerUpdatePositionEvent event = new PlayerUpdatePositionEvent();
+				event.id = object.getString("playerId", "");
+				event.angle = object.getNumber("playerAngle", 0);
+				event.x = object.getNumber("playerX", 0);
+				event.y = object.getNumber("playerY", 0);
+				return event;
+			}
 
-					@Override
-					public String toJson(PlayerUpdatePositionEvent event) {
-						return new JsonImpl().newWriter().object().value("playerId", event.playerId)
-								.value("playerAngle", event.playerAngle).value("playerX", event.playerX)
-								.value("playerY", event.playerY).end().write();
-					}
-				}) : TYPE;
+			@Override
+			public String toJson(final PlayerUpdatePositionEvent event) {
+				return new JsonImpl().newWriter().object().value("playerId", event.id).value("playerAngle", event.angle).value("playerX", event.x)
+						.value("playerY", event.y).end().write();
+			}
+		}) : TYPE;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -79,4 +58,25 @@ public class PlayerUpdatePositionEvent implements RemoteEvent {
 		return getType();
 	}
 
+	public String getPlayerId() {
+		return id;
+	}
+
+	@Override
+	public void updateRealInstanceFromEvent(final PlayerData data) {
+		data.id = id;
+		data.x = x;
+		data.y = y;
+		data.angle = angle;
+		data.state = PlayerStates.values()[state];
+	}
+
+	@Override
+	public void updateEventFromRealInstance(final PlayerData data) {
+		id = data.id;
+		x = data.x;
+		y = data.y;
+		angle = data.angle;
+		state = data.state.ordinal();
+	}
 }

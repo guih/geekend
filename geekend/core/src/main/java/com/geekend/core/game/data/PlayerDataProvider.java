@@ -18,14 +18,11 @@ public class PlayerDataProvider {
 	public PlayerDataProvider() {
 		playerData = new PlayerData(generateRandomId(), 310f, 357f);
 
-		String randomId = generateRandomId();
-		otherPlayers.put(randomId, new PlayerData(randomId, -10f, -10f));
-
-		WebSocketRemoteConnection connection = new WebSocketRemoteConnection();
+		final WebSocketRemoteConnection connection = new WebSocketRemoteConnection();
 		service = new CommunicationService(connection);
 		service.register(PlayerUpdatePositionEvent.getType(), new PlayerUpdatePositionHandler() {
 			@Override
-			public void onEvent(PlayerUpdatePositionEvent event) {
+			public void onEvent(final PlayerUpdatePositionEvent event) {
 				updatePlayerData(event);
 			}
 		});
@@ -40,23 +37,21 @@ public class PlayerDataProvider {
 		return otherPlayers.values();
 	}
 
-	private void updatePlayerData(PlayerUpdatePositionEvent event) {
-		PlayerData data = getPlayerData(event.getPlayerId());
-		data.x = event.getPlayerX();
-		data.y = event.getPlayerY();
-		data.angle = event.getAngle();
+	public void multicastPlayerData() {
+		service.send(new PlayerUpdatePositionEvent(playerData));
 	}
 
-	private PlayerData getPlayerData(String id) {
+	private void updatePlayerData(final PlayerUpdatePositionEvent event) {
+		final PlayerData data = getPlayerData(event.getPlayerId());
+		event.updateRealInstanceFromEvent(data);
+	}
+
+	private PlayerData getPlayerData(final String id) {
 		if (!otherPlayers.containsKey(id)) otherPlayers.put(id, new PlayerData(id));
 		return otherPlayers.get(id);
 	}
 
 	private String generateRandomId() {
 		return "player" + Math.random() * 1000;
-	}
-
-	public void multicastPlayerData() {
-		service.send(new PlayerUpdatePositionEvent(playerData.id, playerData.x, playerData.y, playerData.angle));
 	}
 }
