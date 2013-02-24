@@ -13,9 +13,10 @@ import com.geekend.core.game.sprite.SpriteLoader;
 public class Player {
 
 	private enum PlayerStates {
-		WAITING(new int[] { 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 2, 2, 0, 1, 0, 1, 0, 56, 56 }, 800f), SHOOTING(new int[] { 3, 4, 5, 6, 7 }, 40f), RUNNING(
-				new int[] { 8, 9, 10, 11, 12, 13, 14, 15 },
-				120f), SKATING(new int[] { 16, 17 }, 300f), SKATING_HIT(new int[] { 22 }, 50f), HIT(new int[] { 53 }, 50f), DEAD(new int[] { 55 }, 50f);
+		WAITING(new int[] { 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 2, 2, 0, 1, 0, 1, 0, 56, 56 }, 800f), SHOOTING(new int[] {
+				3, 4, 5, 6, 7 }, 40f), RUNNING(new int[] { 8, 9, 10, 11, 12, 13, 14, 15 }, 120f), SKATING(new int[] {
+				16, 17 }, 300f), SKATING_HIT(new int[] { 22 }, 50f), HIT(new int[] { 53 }, 50f), DEAD(new int[] { 55 },
+				50f);
 
 		private final int[] spriteIndexes;
 		private final float delay;
@@ -26,9 +27,10 @@ public class Player {
 		}
 
 		public static PlayerStates determinePlayerState() {
-			if (InputOracle.isKeyPressed(Key.F)) return PlayerStates.SHOOTING;
-			else if (InputOracle.isKeyPressed(Key.UP) || InputOracle.isKeyPressed(Key.DOWN)) return InputOracle.isKeyPressed(Key.TAB) ? PlayerStates.SKATING
-					: PlayerStates.RUNNING;
+			if (InputOracle.isKeyPressed(Key.F))
+				return PlayerStates.SHOOTING;
+			else if (InputOracle.isKeyPressed(Key.UP) || InputOracle.isKeyPressed(Key.DOWN))
+				return InputOracle.isKeyPressed(Key.TAB) ? PlayerStates.SKATING : PlayerStates.RUNNING;
 			else
 				return PlayerStates.WAITING;
 		}
@@ -103,7 +105,8 @@ public class Player {
 	}
 
 	public void update(final float delta) {
-		final float distance = InputOracle.isKeyPressed(Key.UP) || InputOracle.isKeyPressed(Key.DOWN) ? getSpeed() * delta : 0;
+		final float distance = InputOracle.isKeyPressed(Key.UP) || InputOracle.isKeyPressed(Key.DOWN) ? getSpeed()
+				* delta : 0;
 		final float direction = InputOracle.isKeyPressed(Key.DOWN) ? +1 : 1;
 		if (InputOracle.isKeyPressed(Key.LEFT)) angle -= delta * getTurningSpeed();
 		if (InputOracle.isKeyPressed(Key.RIGHT)) angle += delta * getTurningSpeed();
@@ -113,7 +116,8 @@ public class Player {
 		if (!playerSprite.isReady()) return;
 
 		updatePlayerState();
-		if (spriteCountdown < 0) updateSprite();
+		if (spriteCountdown < 0)
+			updateSprite();
 		else
 			spriteCountdown -= delta;
 
@@ -139,5 +143,9 @@ public class Player {
 	public void paint(final float alpha) {
 		playerSprite.layer().setTranslation(x, y);
 		playerSprite.layer().setRotation(angle);
+	}
+
+	public String getName() {
+		return null;
 	}
 }

@@ -11,7 +11,6 @@ import com.geekend.core.game.GameModule;
 import com.geekend.core.game.component.Console;
 import com.geekend.core.game.component.Player;
 import com.geekend.core.game.input.InputOracle;
-import com.geekend.core.net.CommunicationService;
 
 public class Multiplayer implements GameModule {
 
@@ -22,8 +21,6 @@ public class Multiplayer implements GameModule {
 	private final Player mainPlayer = new Player();
 
 	private Console console;
-
-	private CommunicationService communication;
 
 	@Override
 	public void init(final GroupLayer rootLayer) {
@@ -41,8 +38,8 @@ public class Multiplayer implements GameModule {
 		mainPlayer.init(playerLayer, 0, 0);
 
 		console = new Console();
-		console.init(rootLayer);
-		communication = new CommunicationService(console, 8080);
+
+		console.init(graphics().rootLayer());
 	}
 
 	@Override
@@ -54,9 +51,6 @@ public class Multiplayer implements GameModule {
 	@Override
 	public void update(final float delta) {
 		mainPlayer.update(delta);
-
-		if (InputOracle.isKeyPressed(Key.M))
-			communication.send("Ahoy");
 
 		if (InputOracle.isKeyPressed(Key.SPACE))
 			console.log("Coordenada: " + mainPlayer.getX() + " - " + mainPlayer.getY());
