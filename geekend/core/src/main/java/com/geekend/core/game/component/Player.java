@@ -10,7 +10,7 @@ import com.geekend.core.game.sprite.Sprite;
 import com.geekend.core.game.sprite.SpriteLoader;
 
 @SuppressWarnings("deprecation")
-public abstract class AbstractPlayer implements GamePlayer {
+public final class Player implements GamePlayer {
 
 	private static final String IMAGE = "sprites/player.png";
 	private static final String JSON = "sprites/player.json";
@@ -19,6 +19,7 @@ public abstract class AbstractPlayer implements GamePlayer {
 	private static final int SPRITE_WIDTH = 16;
 
 	protected PlayerData data;
+	private final PlayerController playerController;
 
 	private GroupLayer mainLayer;
 	private Sprite playerSprite;
@@ -26,6 +27,11 @@ public abstract class AbstractPlayer implements GamePlayer {
 	private int spriteIndex;
 
 	private PlayerStates currentPlayerState;
+
+	public Player(final PlayerController playerIntel, final PlayerData data) {
+		playerController = playerIntel;
+		this.data = data;
+	}
 
 	@Override
 	public void init(final GroupLayer layer) {
@@ -36,7 +42,7 @@ public abstract class AbstractPlayer implements GamePlayer {
 
 			@Override
 			public void done(final Sprite resource) {
-				playerSprite.layer().setOrigin(SPRITE_WIDTH/2, SPRITE_HEIGHT/2);
+				playerSprite.layer().setOrigin(SPRITE_WIDTH / 2, SPRITE_HEIGHT / 2);
 			}
 
 			@Override
@@ -49,7 +55,7 @@ public abstract class AbstractPlayer implements GamePlayer {
 				console.log(err.toString());
 			}
 		});
-		
+
 		mainLayer.add(playerSprite.layer());
 	}
 
@@ -64,15 +70,13 @@ public abstract class AbstractPlayer implements GamePlayer {
 
 	@Override
 	public void update(final float delta) {
-		updatePlayerData(delta);
+		playerController.updatePlayerData(data, delta);
 		if (playerSprite.isReady()) updateSprite(delta);
 	}
-	
-	public abstract void updatePlayerData(final float delta);
 
 	private void updateSprite(final float delta) {
 		if (data.state != currentPlayerState) {
-			currentPlayerState = data.state;	
+			currentPlayerState = data.state;
 			spriteIndex = -1;
 			spriteCountdown = data.state.getCountdownDelay();
 			updateSpriteFrame();

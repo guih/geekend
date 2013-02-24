@@ -11,16 +11,17 @@ import playn.core.Image;
 import playn.core.ImageLayer;
 
 import com.geekend.core.game.GameModule;
-import com.geekend.core.game.component.MainPlayer;
-import com.geekend.core.game.component.OpponentPlayer;
+import com.geekend.core.game.component.MainPlayerController;
+import com.geekend.core.game.component.OpponentPlayerController;
+import com.geekend.core.game.component.Player;
 import com.geekend.core.game.data.PlayerData;
 import com.geekend.core.game.data.PlayerDataProvider;
 
 public class Multiplayer implements GameModule {
 
-	private final MainPlayer mainPlayer;
-	
-	private final Map<PlayerData, OpponentPlayer> otherPlayers = new HashMap<PlayerData, OpponentPlayer>();
+	private final Player mainPlayer;
+
+	private final Map<PlayerData, Player> otherPlayers = new HashMap<PlayerData, Player>();
 
 	private GroupLayer gameLayer;
 
@@ -28,13 +29,13 @@ public class Multiplayer implements GameModule {
 
 	private Image bgImage;
 
-	private PlayerDataProvider dataProvider;
+	private final PlayerDataProvider dataProvider;
 
-	public Multiplayer(PlayerDataProvider dataProvider) {
+	public Multiplayer(final PlayerDataProvider dataProvider) {
 		this.dataProvider = dataProvider;
-		mainPlayer = new MainPlayer(dataProvider.getMainPlayerData());
+		mainPlayer = new Player(new MainPlayerController(), dataProvider.getMainPlayerData());
 	}
-	
+
 	@Override
 	public void init(final GroupLayer rootLayer) {
 		gameLayer = graphics().createGroupLayer();
@@ -59,13 +60,13 @@ public class Multiplayer implements GameModule {
 	@Override
 	public void update(final float delta) {
 		mainPlayer.update(delta);
-		for (PlayerData playerData : dataProvider.getOtherPlayers()) {
+		for (final PlayerData playerData : dataProvider.getOtherPlayers()) {
 			if (otherPlayers.containsKey(playerData)) continue;
-			OpponentPlayer player = new OpponentPlayer(playerData);
+			final Player player = new Player(new OpponentPlayerController(), playerData);
 			otherPlayers.put(playerData, player);
 			player.init(playerLayer);
 		}
-		for (OpponentPlayer player : otherPlayers.values())
+		for (final Player player : otherPlayers.values())
 			player.update(delta);
 		dataProvider.multicastPlayerData();
 	}
@@ -76,7 +77,7 @@ public class Multiplayer implements GameModule {
 		gameLayer.setOrigin(mainPlayerData.x, mainPlayerData.y);
 		gameLayer.setTranslation(graphics().width() / 2, graphics().height() / 2);
 		mainPlayer.paint(alpha);
-		for (OpponentPlayer player : otherPlayers.values())
+		for (final Player player : otherPlayers.values())
 			player.paint(alpha);
 	}
 }
