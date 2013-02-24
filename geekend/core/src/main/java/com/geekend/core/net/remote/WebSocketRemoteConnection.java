@@ -27,7 +27,6 @@ public class WebSocketRemoteConnection implements RemoteConnection {
 
 			@Override
 			public void onTextMessage(String msg) {
-				log("onTextMessage: msg=" + msg);
 				for (RemoteMessageListener listener : listeners) {
 					listener.onMessage(msg);
 				}

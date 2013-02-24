@@ -61,7 +61,9 @@ public class Multiplayer implements GameModule {
 		mainPlayer.update(delta);
 		for (PlayerData playerData : dataProvider.getOtherPlayers()) {
 			if (otherPlayers.containsKey(playerData)) continue;
-			otherPlayers.put(playerData, new OpponentPlayer(playerData));
+			OpponentPlayer player = new OpponentPlayer(playerData);
+			otherPlayers.put(playerData, player);
+			player.init(playerLayer);
 		}
 		dataProvider.multicastPlayerData();
 	}
