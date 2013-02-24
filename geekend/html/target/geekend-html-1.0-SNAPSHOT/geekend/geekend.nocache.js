@@ -249,7 +249,7 @@ function geekend(){
   $stats && $stats({moduleName:'geekend', sessionId:$sessionId_0, subSystem:'startup', evtGroup:'bootstrap', millis:(new Date).getTime(), type:'selectingPermutation'});
   if (!isHostedMode()) {
     try {
-      strongName = 'C7CC4BE9C59CE9D8ABFE0AE9CDA1D46E';
+      strongName = 'CF4CB8E3B50B0C7A171C0F2529BAC7BD';
       var idx = strongName.indexOf(':');
       if (idx != -1) {
         softPermutationId = Number(strongName.substring(idx + 1));

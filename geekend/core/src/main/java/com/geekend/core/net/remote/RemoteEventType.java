@@ -1,17 +1,17 @@
 package com.geekend.core.net.remote;
 
-public class RemoteEventType<T extends RemoteEventHandler<?>> {
+public class RemoteEventType<T extends RemoteEvent> {
 
-	private Class<? extends RemoteEvent> eventClass;
+	private RemoteEventFactory<T> factory;
 
 	RemoteEventType() {}
 
-	public RemoteEventType(Class<? extends RemoteEvent> eventClass) {
-		this.eventClass = eventClass;
+	public RemoteEventType(RemoteEventFactory<T> factory) {
+		this.factory = factory;
 	}
 
-	public Class<? extends RemoteEvent> getEventClass() {
-		return eventClass;
+	public RemoteEventFactory<T> getEventFactory() {
+		return factory;
 	}
 
 }

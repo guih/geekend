@@ -11,13 +11,13 @@ import com.geekend.core.net.remote.WebSocketRemoteConnection;
 
 public class PlayerDataProvider {
 
-	private CommunicationService service;
+	private final CommunicationService service;
 	private final Map<String, PlayerData> otherPlayers = new HashMap<String, PlayerData>();
-	private PlayerData playerData;
-	
+	private final PlayerData playerData;
+
 	public PlayerDataProvider() {
 		playerData = new PlayerData(generateRandomId(), 310f, 357f);
-		
+
 		String randomId = generateRandomId();
 		otherPlayers.put(randomId, new PlayerData(randomId, -10f, -10f));
 
@@ -31,15 +31,15 @@ public class PlayerDataProvider {
 		});
 		connection.connect();
 	}
-	
+
 	public PlayerData getMainPlayerData() {
 		return playerData;
 	}
-	
+
 	public Collection<PlayerData> getOtherPlayers() {
 		return otherPlayers.values();
 	}
-	
+
 	private void updatePlayerData(PlayerUpdatePositionEvent event) {
 		PlayerData data = getPlayerData(event.getPlayerId());
 		data.x = event.getPlayerX();

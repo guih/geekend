@@ -5,8 +5,10 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 
 public class JettyBootstrap {
 
+	private static final int PORT = 9999;
+
 	public static void main(String[] args) throws Exception {
-		Server server = new Server(8080);
+		Server server = new Server(PORT);
 		ServletContextHandler servletContextHandler = new ServletContextHandler(server, "/", true, false);
 		servletContextHandler.addServlet(GeekendWebsocketServlet.class, "/");
 		server.start();

@@ -13,7 +13,7 @@ public class WebSocketRemoteConnection implements RemoteConnection {
 
 	private WebSocket webSocket;
 
-	private final int port = 8080;
+	private final int port = 9999;
 
 	private final String address = "192.168.1.108";
 
