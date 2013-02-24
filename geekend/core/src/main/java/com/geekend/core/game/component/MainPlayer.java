@@ -42,7 +42,7 @@ public final class MainPlayer implements GamePlayer {
 
 			@Override
 			public void done(final Sprite resource) {
-				playerSprite.layer().setOrigin(SPRITE_WIDTH, SPRITE_HEIGHT);
+				playerSprite.layer().setOrigin(SPRITE_WIDTH/2, SPRITE_HEIGHT/2);
 			}
 
 			@Override

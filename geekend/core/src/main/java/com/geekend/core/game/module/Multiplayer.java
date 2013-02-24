@@ -65,6 +65,8 @@ public class Multiplayer implements GameModule {
 			otherPlayers.put(playerData, player);
 			player.init(playerLayer);
 		}
+		for (OpponentPlayer player : otherPlayers.values())
+			player.update(delta);
 		dataProvider.multicastPlayerData();
 	}
 

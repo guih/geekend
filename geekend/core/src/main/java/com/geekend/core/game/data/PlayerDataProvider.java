@@ -1,8 +1,7 @@
 package com.geekend.core.game.data;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.geekend.core.net.CommunicationService;
@@ -18,6 +17,9 @@ public class PlayerDataProvider {
 	
 	public PlayerDataProvider() {
 		playerData = new PlayerData(generateRandomId(), 310f, 357f);
+		
+		String randomId = generateRandomId();
+		otherPlayers.put(randomId, new PlayerData(randomId, -10f, -10f));
 
 		WebSocketRemoteConnection connection = new WebSocketRemoteConnection();
 		service = new CommunicationService(connection);
@@ -34,8 +36,8 @@ public class PlayerDataProvider {
 		return playerData;
 	}
 	
-	public List<PlayerData> getOtherPlayers() {
-		return new ArrayList<PlayerData>();
+	public Collection<PlayerData> getOtherPlayers() {
+		return otherPlayers.values();
 	}
 	
 	private void updatePlayerData(PlayerUpdatePositionEvent event) {
