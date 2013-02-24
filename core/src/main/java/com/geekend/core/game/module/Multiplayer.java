@@ -5,12 +5,9 @@ import static playn.core.PlayN.graphics;
 import playn.core.GroupLayer;
 import playn.core.Image;
 import playn.core.ImageLayer;
-import playn.core.Key;
 
 import com.geekend.core.game.GameModule;
-import com.geekend.core.game.component.Console;
-import com.geekend.core.game.component.Player;
-import com.geekend.core.game.input.InputOracle;
+import com.geekend.core.game.component.MainPlayer;
 
 public class Multiplayer implements GameModule {
 
@@ -18,9 +15,7 @@ public class Multiplayer implements GameModule {
 
 	private GroupLayer playerLayer;
 
-	private final Player mainPlayer = new Player();
-
-	private Console console;
+	private final MainPlayer mainPlayer = new MainPlayer();
 
 	@Override
 	public void init(final GroupLayer rootLayer) {
@@ -36,10 +31,6 @@ public class Multiplayer implements GameModule {
 		gameLayer.add(playerLayer);
 
 		mainPlayer.init(playerLayer, 0, 0);
-
-		console = new Console();
-
-		console.init(graphics().rootLayer());
 	}
 
 	@Override
@@ -51,9 +42,6 @@ public class Multiplayer implements GameModule {
 	@Override
 	public void update(final float delta) {
 		mainPlayer.update(delta);
-
-		if (InputOracle.isKeyPressed(Key.SPACE))
-			console.log("Coordenada: " + mainPlayer.getX() + " - " + mainPlayer.getY());
 	}
 
 	@Override
