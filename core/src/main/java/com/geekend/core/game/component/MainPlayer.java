@@ -5,46 +5,13 @@ import playn.core.Key;
 import playn.core.PlayN;
 import playn.core.ResourceCallback;
 
+import com.geekend.core.game.GamePlayer;
 import com.geekend.core.game.input.InputOracle;
 import com.geekend.core.game.sprite.Sprite;
 import com.geekend.core.game.sprite.SpriteLoader;
 
 @SuppressWarnings("deprecation")
-public class Player {
-
-	private enum PlayerStates {
-		WAITING(new int[] { 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 2, 2, 0, 1, 0, 1, 0, 56, 56 }, 800f), SHOOTING(new int[] { 3, 4, 5, 6, 7 }, 40f), RUNNING(
-				new int[] { 8, 9, 10, 11, 12, 13, 14, 15 },
-				120f), SKATING(new int[] { 16, 17 }, 300f), SKATING_HIT(new int[] { 22 }, 50f), HIT(new int[] { 53 }, 50f), DEAD(new int[] { 55 }, 50f);
-
-		private final int[] spriteIndexes;
-		private final float delay;
-
-		private PlayerStates(final int[] spriteIndexes, final float delay) {
-			this.spriteIndexes = spriteIndexes;
-			this.delay = delay;
-		}
-
-		public static PlayerStates determinePlayerState() {
-			if (InputOracle.isKeyPressed(Key.F)) return PlayerStates.SHOOTING;
-			else if (InputOracle.isKeyPressed(Key.UP) || InputOracle.isKeyPressed(Key.DOWN)) return InputOracle.isKeyPressed(Key.TAB) ? PlayerStates.SKATING
-					: PlayerStates.RUNNING;
-			else
-				return PlayerStates.WAITING;
-		}
-
-		public float getCountdownDelay() {
-			return delay;
-		}
-
-		public int numSprites() {
-			return spriteIndexes.length;
-		}
-
-		public int getSpriteIndex(final int index) {
-			return spriteIndexes[index];
-		}
-	}
+public class MainPlayer implements GamePlayer {
 
 	private static final String IMAGE = "sprites/player.png";
 	private static final String JSON = "sprites/player.json";
@@ -64,7 +31,7 @@ public class Player {
 	private float spriteCountdown;
 	private int spriteIndex;
 
-	public void init(final GroupLayer layer, final int i, final int j) {
+	public void init(final GroupLayer layer, final int x, final int y) {
 		mainLayer = layer;
 		playerSprite = SpriteLoader.getSprite(IMAGE, JSON);
 		playerSprite.addCallback(new ResourceCallback<Sprite>() {
@@ -86,6 +53,9 @@ public class Player {
 		mainLayer.add(playerSprite.layer());
 	}
 
+	@Override
+	public void destroy() {}
+
 	public float getSpeed() {
 		return SPEED;
 	}
@@ -102,6 +72,7 @@ public class Player {
 		return (int) y;
 	}
 
+	@Override
 	public void update(final float delta) {
 		final float distance = InputOracle.isKeyPressed(Key.UP) || InputOracle.isKeyPressed(Key.DOWN) ? getSpeed() * delta : 0;
 		final float direction = InputOracle.isKeyPressed(Key.DOWN) ? +1 : 1;
@@ -136,6 +107,7 @@ public class Player {
 		spriteCountdown = state.getCountdownDelay();
 	}
 
+	@Override
 	public void paint(final float alpha) {
 		playerSprite.layer().setTranslation(x, y);
 		playerSprite.layer().setRotation(angle);

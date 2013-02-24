@@ -9,7 +9,7 @@ import playn.core.Key;
 
 import com.geekend.core.game.GameModule;
 import com.geekend.core.game.component.Console;
-import com.geekend.core.game.component.Player;
+import com.geekend.core.game.component.MainPlayer;
 import com.geekend.core.game.input.InputOracle;
 import com.geekend.core.net.CommunicationService;
 
@@ -19,7 +19,7 @@ public class Multiplayer implements GameModule {
 
 	private GroupLayer playerLayer;
 
-	private final Player mainPlayer = new Player();
+	private final MainPlayer mainPlayer = new MainPlayer();
 
 	private Console console;
 
