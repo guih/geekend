@@ -6,9 +6,16 @@ import playn.core.GroupLayer;
 import playn.core.PlayN;
 import playn.core.Touch;
 
-import com.geekend.core.game.GameModule;
-import com.geekend.core.game.data.DataProvider;
-import com.geekend.core.game.module.Multiplayer;
+import com.geekend.core.game.components.ControllableComponentFactory;
+import com.geekend.core.game.components.controllable.ControllableComponent;
+import com.geekend.core.game.components.controllable.Data;
+import com.geekend.core.game.components.controllable.player.MainPlayerController;
+import com.geekend.core.game.components.controllable.player.OpponentPlayerController;
+import com.geekend.core.game.components.controllable.player.Player;
+import com.geekend.core.game.components.modules.GameModule;
+import com.geekend.core.game.components.modules.Multiplayer;
+import com.geekend.core.game.services.data.DataProvider;
+import com.geekend.core.game.utils.sprite.SpriteLoader;
 
 public class Geekend implements Game {
 
@@ -17,17 +24,31 @@ public class Geekend implements Game {
 	private final GameModule multiplayer;
 
 	public Geekend() {
-		multiplayer = new Multiplayer(new DataProvider());
+		multiplayer = new Multiplayer(new DataProvider(), new ControllableComponentFactory() {
+
+			private static final String IMAGE = "sprites/player.png";
+			private static final String JSON = "sprites/player.json";
+
+			@Override
+			public ControllableComponent<Player> createMain(final Data<Player> data) {
+				return new ControllableComponent<Player>(new MainPlayerController(), data, SpriteLoader.getSprite(IMAGE, JSON));
+			}
+
+			@Override
+			@SuppressWarnings({ "unchecked", "rawtypes" })
+			public ControllableComponent create(final Data data) {
+				return new ControllableComponent(new OpponentPlayerController(), data, SpriteLoader.getSprite(IMAGE, JSON));
+			}
+		});
 	}
-	
+
 	@Override
 	public void init() {
 		try {
 			PlayN.touch().setListener(new Touch.Adapter() {
 				@Override
 				public void onTouchStart(final Touch.Event[] touches) {
-					if (touches.length > 1)
-						switchModule(multiplayer);
+					if (touches.length > 1) switchModule(multiplayer);
 				}
 			});
 		} catch (final UnsupportedOperationException e) {
@@ -53,8 +74,7 @@ public class Geekend implements Game {
 	}
 
 	public void switchModule(final GameModule module) {
-		if (currentModule != null)
-			currentModule.destroy();
+		if (currentModule != null) currentModule.destroy();
 		rootLayer.clear();
 		currentModule = module;
 		currentModule.init(rootLayer);
